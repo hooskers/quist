@@ -1,0 +1,19 @@
+{
+	"parser": "babel-eslint",
+	"plugins": [
+		"react"
+	],
+	"rules": {
+		"prop-types": [0],
+		"no-underscore-dangle": [
+			2,
+			{"allow": [
+				"__REDUX_DEVTOOLS_EXTENSION__"
+			]}
+		]
+	},
+	"extends": "airbnb",
+	"env": {
+		"browser": true
+	}
+}
