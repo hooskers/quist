@@ -10,6 +10,7 @@ class List extends Component {
   state = {
     items: [],
     newItemValue: '',
+    name: '',
   }
 
   async componentDidMount() {
@@ -21,6 +22,7 @@ class List extends Component {
     const listData = await list.data();
     this.setState({ //eslint-disable-line
       items: listData.items,
+      name: listData.name,
     });
 
     listDocument.onSnapshot(this.setItemsOnState);
@@ -63,6 +65,7 @@ class List extends Component {
 
     return (
       <div>
+        {this.state.name}
         <form
           onSubmit={this.addItem}
         >
