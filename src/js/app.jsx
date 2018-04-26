@@ -19,51 +19,18 @@ class App extends Component {
     user: null,
   };
 
-  async componentDidMount() {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ user });
+  componentDidMount() {
+    auth.onAuthStateChanged(async (authUser) => {
+      if (authUser) {
+        const { uid } = authUser;
+
+        const userDoc = await db.collection('users').doc(uid).get();
+        const userData = userDoc.data();
+
+        this.setState({ user: authUser, ...userData }); //eslint-disable-line
       }
     });
-
-    const userCollection = await db.collection('users').where('name', '==', 'Wade').get();
-    this.userCollection = userCollection;
-    // console.log(this.userCollection);
-
-    const users = [];
-    userCollection.forEach(user => users.push(user.data()));
-    // console.log({ ...users[0] });
-    this.setState({ ...users[0] }); //eslint-disable-line
-
-    // const ownLists = [];
-    // users[0].ownLists.forEach(list => ownLists.push(list));
-
-    // const ownListsPromise = Promise.all(ownLists.map(async (list) => {
-    //   console.log('poop');
-    //   return list.get();
-    //   // const doneList = await list.get();
-    //   // return doneList.data();
-    // }));
-    // // console.log(ownLists);
-
-    // const sharedLists = [];
-    // users[0].sharedLists.forEach(list => sharedLists.push(list));
-
-    // const sharedListsPromise = Promise.all(sharedLists.map(async (list) => {
-    //   const doneList = await list.get();
-    //   return doneList.data();
-    // }));
-
-    // Promise.all([ownListsPromise, sharedListsPromise]).then((resolvedLists) => {
-    //   const [resolvedOwnLists, resolvedSharedLists] = resolvedLists;
-    //   this.setState({
-    //     ownLists: resolvedOwnLists,
-    //     sharedLists: resolvedSharedLists,
-    //   });
-    // });
   }
-
-  userCollection = null;
 
   login = () => {
     auth.signInWithPopup(provider)
