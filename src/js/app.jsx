@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { css } from 'react-emotion';
+import database, { provider, auth } from './firebase';
 
 import List from './components/List/index';
-import db, { provider, auth } from './firebase';
+
+const DBContext = React.createContext(database);
 
 const style = css`
   color: blue;
@@ -24,7 +26,7 @@ class App extends Component {
       if (authUser) {
         const { uid } = authUser;
 
-        const userDoc = await db.collection('users').doc(uid).get();
+        const userDoc = await database.collection('users').doc(uid).get();
         const userData = userDoc.data();
 
         this.setState({ user: authUser, ...userData }); //eslint-disable-line
@@ -56,15 +58,20 @@ class App extends Component {
     }
 
     return (
-      this.state.name ?
-        <div>
-          <button onClick={this.logout}>logout</button>
-          <span>Name: {this.state.name}</span>
-          {this.state.ownLists.map(list => <List key={list.id} listDocument={list} />)}
-          {this.state.sharedLists.map(list => <List key={list.id} listDocument={list} />)}
-        </div>
-        :
-        <div>LOADING!!!!</div>
+      <DBContext.Provider value={database}>
+        {this.state.name ?
+          <div>
+            <button onClick={this.logout}>logout</button>
+            <span>Name: {this.state.name}</span>
+            {this.state.ownLists.map(list => (
+              <DBContext.Consumer key={list.id}>
+                {db => <List listDocument={list} db={db} />}
+              </DBContext.Consumer>))}
+            {this.state.sharedLists.map(list => <List key={list.id} listDocument={list} />)}
+          </div>
+          :
+          <div>LOADING!!!!</div>}
+      </DBContext.Provider>
     );
   }
 }

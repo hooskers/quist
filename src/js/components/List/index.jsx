@@ -5,6 +5,7 @@ import DocumentReference from 'firebase/firestore';
 class List extends Component {
   static propTypes = {
     listDocument: PropTypes.instanceOf(DocumentReference.constructor).isRequired,
+    db: PropTypes.object, //eslint-disable-line
   };
 
   state = {
@@ -40,17 +41,27 @@ class List extends Component {
     e.preventDefault();
     e.stopPropagation();
 
-    // TODO: This update needs to be a db.transaction()
-    this.props.listDocument.update({
-      items: [
-        ...this.state.items,
-        {
-          item: this.state.newItemValue,
-          category: '',
-          checked: false,
-        },
-      ],
-    });
+    this.props.db.runTransaction(transaction => (
+      transaction.get(this.props.listDocument).then((listDoc) => {
+        if (!listDoc.exists) throw new Error('List doc does not exist');
+
+        const listData = listDoc.data();
+        const items = [
+          ...listData.items,
+          {
+            item: this.state.newItemValue,
+            category: '',
+            checked: false,
+          },
+        ];
+
+        transaction.update(this.props.listDocument, { items });
+        return items;
+      })
+        .catch((err) => {
+          throw new Error(err);
+        })
+    ));
   }
 
   newItemChange = (e) => {

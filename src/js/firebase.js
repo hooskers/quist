@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import 'firebase/firestore';
 
 const config = {
   apiKey: 'AIzaSyA1nM7YtY6NATWUMHTd0LZPs3p2D7oKJeA',
@@ -11,9 +12,9 @@ const config = {
 
 firebase.initializeApp(config);
 
-const db = firebase.firestore();
-db.settings({ timestampsInSnapshots: true });
+const database = firebase.firestore();
+database.settings({ timestampsInSnapshots: true });
 
 export const provider = new firebase.auth.GoogleAuthProvider();
 export const auth = firebase.auth();
-export default db;
+export default database;
