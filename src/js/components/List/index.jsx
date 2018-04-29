@@ -22,7 +22,7 @@ class List extends Component {
     e.stopPropagation();
     e.preventDefault();
 
-    return this.props.onAddItem([
+    this.props.onAddItem([
       ...this.props.items,
       {
         item: this.state.newItemValue,
@@ -30,6 +30,8 @@ class List extends Component {
         checked: false,
       },
     ]);
+
+    this.state.newItemValue = '';
   };
 
   // deleteItem = (e) => {
