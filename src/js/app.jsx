@@ -4,6 +4,7 @@ import { css } from 'react-emotion';
 import database, { provider, auth } from './firebase';
 
 import List from './components/List/index';
+import Firestore from './components/Firestore/index';
 
 const DBContext = React.createContext(database);
 
@@ -65,7 +66,17 @@ class App extends Component {
             <span>Name: {this.state.name}</span>
             {this.state.ownLists.map(list => (
               <DBContext.Consumer key={list.id}>
-                {db => <List listDocument={list} db={db} />}
+                {db => (
+                  <Firestore listDocRef={list} database={db}>
+                    {(listData, runTransaction) => (
+                      <List
+                        items={listData.items}
+                        name={listData.name}
+                        onAddItem={runTransaction}
+                      />
+                    )}
+                  </Firestore>
+                )}
               </DBContext.Consumer>))}
             {this.state.sharedLists.map(list => <List key={list.id} listDocument={list} />)}
           </div>

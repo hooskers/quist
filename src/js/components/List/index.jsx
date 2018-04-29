@@ -1,68 +1,40 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DocumentReference from 'firebase/firestore';
+
+import Item from '../Item';
 
 class List extends Component {
   static propTypes = {
-    listDocument: PropTypes.instanceOf(DocumentReference.constructor).isRequired,
-    db: PropTypes.object, //eslint-disable-line
+    items: PropTypes.arrayOf(PropTypes.shape({
+      item: PropTypes.string,
+      category: PropTypes.string,
+      checked: PropTypes.bool,
+    })).isRequired,
+    name: PropTypes.string.isRequired,
+    onAddItem: PropTypes.func.isRequired,
   };
 
   state = {
-    items: [],
     newItemValue: '',
-    name: '',
-  }
-
-  async componentDidMount() {
-    const {
-      listDocument,
-    } = this.props;
-
-    const list = await listDocument.get();
-    const listData = await list.data();
-    this.setState({ //eslint-disable-line
-      items: listData.items,
-      name: listData.name,
-    });
-
-    listDocument.onSnapshot(this.setItemsOnState);
-  }
-
-  setItemsOnState = async (doc) => {
-    const listData = await doc.data();
-
-    this.setState({
-      items: listData.items,
-    });
   }
 
   addItem = (e) => {
-    e.preventDefault();
     e.stopPropagation();
+    e.preventDefault();
 
-    this.props.db.runTransaction(transaction => (
-      transaction.get(this.props.listDocument).then((listDoc) => {
-        if (!listDoc.exists) throw new Error('List doc does not exist');
+    return this.props.onAddItem([
+      ...this.props.items,
+      {
+        item: this.state.newItemValue,
+        category: '',
+        checked: false,
+      },
+    ]);
+  };
 
-        const listData = listDoc.data();
-        const items = [
-          ...listData.items,
-          {
-            item: this.state.newItemValue,
-            category: '',
-            checked: false,
-          },
-        ];
+  // deleteItem = (e) => {
 
-        transaction.update(this.props.listDocument, { items });
-        return items;
-      })
-        .catch((err) => {
-          throw new Error(err);
-        })
-    ));
-  }
+  // }
 
   newItemChange = (e) => {
     e.preventDefault();
@@ -70,13 +42,13 @@ class List extends Component {
   }
 
   render() {
-    if (!this.state.items.length) {
+    if (!this.props.items.length) {
       return null;
     }
 
     return (
       <div>
-        {this.state.name}
+        {this.props.name}
         <form
           onSubmit={this.addItem}
         >
@@ -87,7 +59,7 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
-        {this.state.items.map(item => <div key={item.item}>{item.item}</div>)}
+        {this.props.items.map(item => <Item key={item.item} item={item.item} />)}
         <br />
       </div>
     );
