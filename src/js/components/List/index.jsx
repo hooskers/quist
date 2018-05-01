@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import uuid from 'uuid/v4';
 
 import Item from '../Item';
 
 class List extends Component {
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({
-      item: PropTypes.string,
+      id: PropTypes.string,
+      title: PropTypes.string,
       category: PropTypes.string,
       checked: PropTypes.bool,
     })).isRequired,
     name: PropTypes.string.isRequired,
     onAddItem: PropTypes.func.isRequired,
+    onDeleteItem: PropTypes.func.isRequired,
   };
 
   state = {
@@ -25,7 +28,8 @@ class List extends Component {
     this.props.onAddItem([
       ...this.props.items,
       {
-        item: this.state.newItemValue,
+        id: uuid(),
+        title: this.state.newItemValue,
         category: '',
         checked: false,
       },
@@ -34,9 +38,11 @@ class List extends Component {
     this.state.newItemValue = '';
   };
 
-  // deleteItem = (e) => {
-
-  // }
+  deleteItem = (id) => {
+    this.props.onDeleteItem([
+      ...this.props.items.filter(item => item.id !== id),
+    ]);
+  }
 
   newItemChange = (e) => {
     e.preventDefault();
@@ -61,7 +67,9 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
-        {this.props.items.map(item => <Item key={item.item} item={item.item} />)}
+        {this.props.items.map(item => (
+          <Item key={item.id} id={item.id} title={item.title} onDelete={this.deleteItem} />
+        ))}
         <br />
       </div>
     );

@@ -13,7 +13,6 @@ const style = css`
   background-color: green;
 `;
 
-// TODO: User's info should be in context provider
 class App extends Component {
   state = {
     name: '',
@@ -73,6 +72,7 @@ class App extends Component {
                         items={listData.items}
                         name={listData.name}
                         onAddItem={runTransaction}
+                        onDeleteItem={runTransaction}
                       />
                     )}
                   </Firestore>

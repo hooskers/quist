@@ -36,6 +36,7 @@
     "react-dom": "^16.2.0",
     "react-emotion": "^9.1.2",
     "uglifyjs-webpack-plugin": "^1.2.0",
+    "uuid": "^3.2.1",
     "webpack": "^4.6.0",
     "webpack-merge": "^4.1.1"
   }

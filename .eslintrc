@@ -4,6 +4,7 @@
 		"react"
 	],
 	"rules": {
+		"jsx-a11y/accessible-emoji": false,
 		"prop-types": [0],
 		"no-underscore-dangle": [
 			2,
