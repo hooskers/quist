@@ -63,7 +63,39 @@ class App extends Component {
           <div>
             <button onClick={this.logout}>logout</button>
             <span>Name: {this.state.name}</span>
-            {this.state.ownLists.map(list => (
+            <DBContext.Consumer>
+              {db => (
+                this.state.ownLists.map(list => (
+                  <Firestore listDocRef={list} database={db}>
+                    {(listData, runTransaction) => (
+                      <List
+                        items={listData.items}
+                        name={listData.name}
+                        onAddItem={runTransaction}
+                        onDeleteItem={runTransaction}
+                      />
+                    )}
+                  </Firestore>
+                ))
+              )}
+            </DBContext.Consumer>
+            <DBContext.Consumer>
+              {db => (
+                this.state.sharedLists.map(list => (
+                  <Firestore listDocRef={list} database={db}>
+                    {(listData, runTransaction) => (
+                      <List
+                        items={listData.items}
+                        name={listData.name}
+                        onAddItem={runTransaction}
+                        onDeleteItem={runTransaction}
+                      />
+                    )}
+                  </Firestore>
+                ))
+              )}
+            </DBContext.Consumer>
+            {/* {this.state.ownLists.map(list => (
               <DBContext.Consumer key={list.id}>
                 {db => (
                   <Firestore listDocRef={list} database={db}>
@@ -77,7 +109,7 @@ class App extends Component {
                     )}
                   </Firestore>
                 )}
-              </DBContext.Consumer>))}
+              </DBContext.Consumer>))} */}
             {this.state.sharedLists.map(list => <List key={list.id} listDocument={list} />)}
           </div>
           :
