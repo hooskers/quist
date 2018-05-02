@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { render } from 'react-dom';
 import { css } from 'react-emotion';
 import database, { provider, auth } from './firebase';
@@ -65,52 +65,42 @@ class App extends Component {
             <span>Name: {this.state.name}</span>
             <DBContext.Consumer>
               {db => (
-                this.state.ownLists.map(list => (
-                  <Firestore listDocRef={list} database={db}>
-                    {(listData, runTransaction) => (
-                      <List
-                        items={listData.items}
-                        name={listData.name}
-                        onAddItem={runTransaction}
-                        onDeleteItem={runTransaction}
-                      />
-                    )}
-                  </Firestore>
-                ))
+                <Fragment>
+                  <h2>Your lists:</h2>
+                  {this.state.ownLists.map(list => (
+                    <Firestore key={list.id} listDocRef={list} database={db}>
+                      {(listData, runTransaction) => (
+                        <List
+                          items={listData.items}
+                          name={listData.name}
+                          onAddItem={runTransaction}
+                          onDeleteItem={runTransaction}
+                        />
+                      )}
+                    </Firestore>
+                  ))}
+                </Fragment>
               )}
             </DBContext.Consumer>
             <DBContext.Consumer>
               {db => (
-                this.state.sharedLists.map(list => (
-                  <Firestore listDocRef={list} database={db}>
-                    {(listData, runTransaction) => (
-                      <List
-                        items={listData.items}
-                        name={listData.name}
-                        onAddItem={runTransaction}
-                        onDeleteItem={runTransaction}
-                      />
-                    )}
-                  </Firestore>
-                ))
+                <Fragment>
+                  <h2>Shared lists:</h2>
+                  {this.state.sharedLists.map(list => (
+                    <Firestore key={list.id} listDocRef={list} database={db}>
+                      {(listData, runTransaction) => (
+                        <List
+                          items={listData.items}
+                          name={listData.name}
+                          onAddItem={runTransaction}
+                          onDeleteItem={runTransaction}
+                        />
+                      )}
+                    </Firestore>
+                  ))}
+                </Fragment>
               )}
             </DBContext.Consumer>
-            {/* {this.state.ownLists.map(list => (
-              <DBContext.Consumer key={list.id}>
-                {db => (
-                  <Firestore listDocRef={list} database={db}>
-                    {(listData, runTransaction) => (
-                      <List
-                        items={listData.items}
-                        name={listData.name}
-                        onAddItem={runTransaction}
-                        onDeleteItem={runTransaction}
-                      />
-                    )}
-                  </Firestore>
-                )}
-              </DBContext.Consumer>))} */}
-            {this.state.sharedLists.map(list => <List key={list.id} listDocument={list} />)}
           </div>
           :
           <div>LOADING!!!!</div>}
