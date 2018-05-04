@@ -50,7 +50,6 @@ class ListGalleryFirestore extends Component {
       sharedUsers: [],
     })
       .then(async () => {
-        console.log('Document successfully written!');
         const userRef = await database.collection('users').doc(this.props.userId);
         database.runTransaction(transaction => (
           transaction.get(userRef).then(async (userDoc) => {
@@ -64,11 +63,11 @@ class ListGalleryFirestore extends Component {
               database.doc(`lists/${listId}`),
             ];
             transaction.update(userRef, { ownLists: newOwnLists });
-          }).then(() => console.log('User successfully updated!'))
+          })
         ));
       })
       .catch((error) => {
-        console.error('Error writing document: ', error);
+        throw new Error(`Error writing document: ${error}`);
       });
   }
 
