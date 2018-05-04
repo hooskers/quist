@@ -50,10 +50,6 @@ class List extends Component {
   }
 
   render() {
-    if (!this.props.items.length) {
-      return null;
-    }
-
     return (
       <div>
         {this.props.name}
