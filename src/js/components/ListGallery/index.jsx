@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import database from '../../firebase';
 
@@ -10,6 +10,7 @@ class ListGallery extends Component {
     ownLists: PropTypes.array.isRequired, //eslint-disable-line
     sharedLists: PropTypes.array.isRequired, //eslint-disable-line
     onAddList: PropTypes.func.isRequired,
+    onDeleteList: PropTypes.func.isRequired,
   }
 
   state = {
@@ -26,6 +27,8 @@ class ListGallery extends Component {
     this.props.onAddList([], this.state.newListValue);
     this.setState({ newListValue: '' });
   }
+
+  deleteList = listId => () => this.props.onDeleteList(listId);
 
   render() {
     return (
@@ -44,12 +47,16 @@ class ListGallery extends Component {
         {this.props.ownLists.map(list => (
           <Firestore key={list.id} listDocRef={list} database={database}>
             {(listData, runTransaction) => (
-              <List
-                items={listData.items}
-                name={listData.name}
-                onAddItem={runTransaction}
-                onDeleteItem={runTransaction}
-              />
+              <Fragment>
+                <span>{listData.name}</span>
+                <button onClick={this.deleteList(list.id)}>Delete list</button>
+                <List
+                  items={listData.items}
+                  name={listData.name}
+                  onAddItem={runTransaction}
+                  onDeleteItem={runTransaction}
+                />
+              </Fragment>
             )}
           </Firestore>
         ))}

@@ -32,6 +32,9 @@ class ListFirestore extends Component {
   updateStateFromDoc = async (doc) => {
     const listData = await doc.data();
 
+    // List was deleted
+    if (listData === undefined) return;
+
     this.setState({
       items: listData.items,
       name: listData.name,

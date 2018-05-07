@@ -77,11 +77,12 @@ class App extends Component {
             <UserContext.Consumer>
               {userId => (
                 <ListGalleryFirestore userId={userId}>
-                  {(ownLists, sharedLists, addDocument) => (
+                  {(ownLists, sharedLists, addList, deleteList) => (
                     <ListGallery
                       ownLists={ownLists}
                       sharedLists={sharedLists}
-                      onAddList={addDocument}
+                      onAddList={addList}
+                      onDeleteList={deleteList}
                     />
                   )}
                 </ListGalleryFirestore>

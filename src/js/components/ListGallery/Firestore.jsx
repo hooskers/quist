@@ -62,6 +62,7 @@ class ListGalleryFirestore extends Component {
               ...userData.ownLists,
               database.doc(`lists/${listId}`),
             ];
+
             transaction.update(userRef, { ownLists: newOwnLists });
           })
         ));
@@ -71,12 +72,36 @@ class ListGalleryFirestore extends Component {
       });
   }
 
+  deleteListDocument = (listId) => {
+    database.collection('lists').doc(listId).delete().then(async () => {
+      const userRef = await database.collection('users').doc(this.props.userId);
+      database.runTransaction(transaction => (
+        transaction.get(userRef).then(async (userDoc) => {
+          if (!userDoc.exists) {
+            throw new Error(`User doc for ID: (${this.props.userId}) does not exist`);
+          }
+
+          const userData = await userDoc.data();
+          // const newOwnLists = [
+          //   ...userData.ownLists,
+          //   database.doc(`lists/${listId}`),
+          // ];
+
+          const newOwnLists = userData.ownLists.filter(list => list.id !== listId);
+
+          transaction.update(userRef, { ownLists: newOwnLists });
+        })
+      ));
+    });
+  }
+
   render() {
     return (
       this.props.children(
         this.state.ownLists,
         this.state.sharedLists,
         this.addListDocument,
+        this.deleteListDocument,
       )
     );
   }
