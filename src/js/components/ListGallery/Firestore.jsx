@@ -19,16 +19,44 @@ class ListGalleryFirestore extends Component {
       userId,
     } = this.props;
 
-    const userDocRef = await database.collection('users').doc(userId);
+    console.log(`userId: ${userId}`);
 
-    const user = await userDocRef.get();
-    const userData = await user.data();
-    this.setState({ //eslint-disable-line
-      ownLists: userData.ownLists,
-      sharedLists: userData.sharedLists,
-    });
+    try {
+      const ownListsSnapshot = await database.collection('newLists')
+        .where('owner', '==', userId).get();
 
-    userDocRef.onSnapshot(this.updateStateFromDoc);
+      const ownLists = [];
+
+      ownListsSnapshot.forEach(async (doc) => {
+        // console.log(doc.id);
+        // const itemsCollection = await database.collection(`/newLists/${doc.id}/items`);
+        // const itemsSnapshot = await itemsCollection.get();
+        // itemsSnapshot.forEach((itemDoc) => {
+        //   console.log(itemDoc.data());
+        // });
+        // TODO: Can the `items` object be updated WITHOUT a transaction??
+        // const docData = await doc.data();
+        ownLists.push(doc.ref);
+        // console.log(new Map(Object.entries(docData.items)).get('test'));
+        // doc.ref.update('items.test.checked', true);
+      });
+
+      this.setState({ ownLists }); // eslint-disable-line
+    } catch (e) {
+      console.error(e);
+    }
+
+
+    // const userDocRef = await database.collection('users').doc(userId);
+
+    // const user = await userDocRef.get();
+    // const userData = await user.data();
+    // this.setState({ //eslint-disable-line
+    //   ownLists: userData.ownLists,
+    //   sharedLists: userData.sharedLists,
+    // });
+
+    // userDocRef.onSnapshot(this.updateStateFromDoc);
   }
 
   updateStateFromDoc = async (doc) => {

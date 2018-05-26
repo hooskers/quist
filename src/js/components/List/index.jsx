@@ -6,13 +6,15 @@ import Item from '../Item';
 
 class List extends Component {
   static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      category: PropTypes.string,
-      checked: PropTypes.bool,
-    })).isRequired,
-    name: PropTypes.string.isRequired,
+    // TODO: Change `items` to Map?
+    items: PropTypes.object.isRequired, // eslint-disable-line
+    // items: PropTypes.arrayOf(PropTypes.shape({
+    //   id: PropTypes.string,
+    //   title: PropTypes.string,
+    //   category: PropTypes.string,
+    //   checked: PropTypes.bool,
+    // })).isRequired,
+    title: PropTypes.string.isRequired,
     onAddItem: PropTypes.func.isRequired,
     onDeleteItem: PropTypes.func.isRequired,
   };
@@ -25,23 +27,31 @@ class List extends Component {
     e.stopPropagation();
     e.preventDefault();
 
-    this.props.onAddItem([
-      ...this.props.items,
-      {
-        id: uuid(),
-        title: this.state.newItemValue,
-        category: '',
-        checked: false,
-      },
-    ]);
+    this.props.onAddItem({
+      id: uuid(),
+      title: this.state.newItemValue,
+      category: '',
+      checked: false,
+    });
+
+    // this.props.onAddItem([
+    //   ...this.props.items,
+    //   {
+    //     id: uuid(),
+    //     title: this.state.newItemValue,
+    //     category: '',
+    //     checked: false,
+    //   },
+    // ]);
 
     this.state.newItemValue = '';
   };
 
   deleteItem = (id) => {
-    this.props.onDeleteItem([
-      ...this.props.items.filter(item => item.id !== id),
-    ]);
+    this.props.onDeleteItem(id);
+    // this.props.onDeleteItem([
+    //   ...this.props.items.filter(item => item.id !== id),
+    // ]);
   }
 
   newItemChange = (e) => {
@@ -50,9 +60,11 @@ class List extends Component {
   }
 
   render() {
+    console.log(this.props);
+    // console.log(this.props.items);
     return (
       <div>
-        {this.props.name}
+        {this.props.title}
         <form
           onSubmit={this.addItem}
         >
@@ -63,9 +75,14 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
-        {this.props.items.map(item => (
+        {Array.from(this.props.items.entries()).map((kv) => {
+          const id = kv[0];
+          const item = kv[1];
+          return <Item key={id} id={id} title={item.title} onDelete={this.deleteItem} />;
+        })}
+        {/* {this.props.items.map(item => (
           <Item key={item.id} id={item.id} title={item.title} onDelete={this.deleteItem} />
-        ))}
+        ))} */}
         <br />
       </div>
     );

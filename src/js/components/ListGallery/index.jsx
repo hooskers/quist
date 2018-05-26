@@ -46,15 +46,15 @@ class ListGallery extends Component {
         <h2>Your lists:</h2>
         {this.props.ownLists.map(list => (
           <Firestore key={list.id} listDocRef={list} database={database}>
-            {(listData, runTransaction) => (
+            {(listData, addItem, deleteItem) => (
               <Fragment>
-                <span>{listData.name}</span>
+                <span>{listData.title}</span>
                 <button onClick={this.deleteList(list.id)}>Delete list</button>
                 <List
                   items={listData.items}
-                  name={listData.name}
-                  onAddItem={runTransaction}
-                  onDeleteItem={runTransaction}
+                  title={listData.title}
+                  onAddItem={addItem}
+                  onDeleteItem={deleteItem}
                 />
               </Fragment>
             )}
@@ -63,12 +63,12 @@ class ListGallery extends Component {
         <h2>Shared lists:</h2>
         {this.props.sharedLists.map(list => (
           <Firestore key={list.id} listDocRef={list} database={database}>
-            {(listData, runTransaction) => (
+            {(listData, addItem, deleteItem) => (
               <List
                 items={listData.items}
                 name={listData.name}
-                onAddItem={runTransaction}
-                onDeleteItem={runTransaction}
+                onAddItem={addItem}
+                onDeleteItem={deleteItem}
               />
             )}
           </Firestore>
