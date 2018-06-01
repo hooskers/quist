@@ -45,7 +45,7 @@ class ListGallery extends Component {
         </form>
         <h2>Your lists:</h2>
         {this.props.ownLists.map(list => (
-          <Firestore key={list.id} listDocRef={list} database={database}>
+          <Firestore key={list.id} list={list} database={database}>
             {(listData, addItem, deleteItem) => (
               <Fragment>
                 <span>{listData.title}</span>
