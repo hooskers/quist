@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const Item = ({ id, title, checked, onDelete }) => { //eslint-disable-line
   return (
@@ -11,8 +11,11 @@ const Item = ({ id, title, checked, onDelete }) => { //eslint-disable-line
   );
 };
 
-// Item.propTypes = {
-
-// }
+Item.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default Item;

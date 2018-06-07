@@ -5,6 +5,7 @@
   "author": "Wade Johnson",
   "license": "MIT",
   "devDependencies": {
+    "@compositor/kit": "^1.0.37",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
@@ -21,7 +22,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "kit": "kit -p 8090 examples"
   },
   "dependencies": {
     "babel-plugin-emotion": "^9.1.2",
