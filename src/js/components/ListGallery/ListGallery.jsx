@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import database from '../../firebase';
 
-import Firestore from '../List/Firestore';
 import List from '../List';
 
 class ListGallery extends Component {
@@ -45,23 +43,17 @@ class ListGallery extends Component {
         </form>
         <h2>Your lists:</h2>
         {this.props.ownLists.map(list => (
-          <Fragment>
+          <Fragment key={list.id}>
             <button onClick={this.deleteList(list.id)}>Delete list</button>
             <List list={list} />
           </Fragment>
         ))}
         <h2>Shared lists:</h2>
         {this.props.sharedLists.map(list => (
-          <Firestore key={list.id} listDocRef={list} database={database}>
-            {(listData, addItem, deleteItem) => (
-              <List
-                items={listData.items}
-                name={listData.name}
-                onAddItem={addItem}
-                onDeleteItem={deleteItem}
-              />
-            )}
-          </Firestore>
+          <Fragment key={list.id}>
+            <button onClick={this.deleteList(list.id)}>Delete list</button>
+            <List list={list} />
+          </Fragment>
         ))}
       </div>
     );

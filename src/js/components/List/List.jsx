@@ -57,7 +57,15 @@ class List extends Component {
         {Object.entries(this.props.items).map((kv) => {
           const id = kv[0];
           const item = kv[1];
-          return <Item key={id} id={id} title={item.title} onDelete={this.deleteItem} />;
+          return (
+            <Item
+              key={id}
+              id={id}
+              title={item.title}
+              checked={item.checked}
+              onDelete={this.deleteItem}
+            />
+          );
         })}
         <br />
       </div>

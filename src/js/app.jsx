@@ -6,18 +6,6 @@ import database, { provider, auth } from './firebase';
 
 import UserContext from './components/UserContext';
 import ListGallery from './components/ListGallery';
-// import ListGalleryFirestore from './components/ListGallery/Firestore';
-
-// import List from './components/List/index';
-// import Firestore from './components/Firestore/index';
-
-// const DBContext = React.createContext(database);
-// const UserContext = React.createContext({
-//   name: '',
-//   ownLists: [],
-//   sharedLists: [],
-//   userRef: undefined,
-// });
 
 const style = css`
   color: blue;
@@ -27,8 +15,6 @@ const style = css`
 class App extends Component {
   state = {
     name: '',
-    // ownLists: [],
-    // sharedLists: [],
     user: null,
   };
 
