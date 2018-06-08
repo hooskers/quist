@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { css } from 'react-emotion';
+// import { Router } from '@reach/router';
 import database, { provider, auth } from './firebase';
+
 import UserContext from './components/UserContext';
-
-
 import ListGallery from './components/ListGallery';
-import ListGalleryFirestore from './components/ListGallery/Firestore';
+// import ListGalleryFirestore from './components/ListGallery/Firestore';
 
 // import List from './components/List/index';
 // import Firestore from './components/Firestore/index';
@@ -74,20 +74,7 @@ class App extends Component {
           <button onClick={this.logout}>logout</button>
           <span>Name: {this.state.name}</span>
           <UserContext.Provider value={this.state.user.uid}>
-            <UserContext.Consumer>
-              {userId => (
-                <ListGalleryFirestore userId={userId}>
-                  {(ownLists, sharedLists, addList, deleteList) => (
-                    <ListGallery
-                      ownLists={ownLists}
-                      sharedLists={sharedLists}
-                      onAddList={addList}
-                      onDeleteList={deleteList}
-                    />
-                  )}
-                </ListGalleryFirestore>
-              )}
-            </UserContext.Consumer>
+            <ListGallery />
           </UserContext.Provider>
         </div>
         :

@@ -1,68 +1,19 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
+import React from 'react';
 
-import Item from '../Item';
+import List from './List';
+import ListFirestore from './Firestore';
+import database from '../../firebase';
 
-class List extends Component {
-  static propTypes = {
-    // TODO: Change `items` to Map?
-    items: PropTypes.object.isRequired, // eslint-disable-line
-    title: PropTypes.string.isRequired,
-    onAddItem: PropTypes.func.isRequired,
-    onDeleteItem: PropTypes.func.isRequired,
-  };
+export default ({ list }) => ( //eslint-disable-line
+  <ListFirestore list={list} database={database}>
+    {(listData, addItem, deleteItem) => (
+      <List
+        items={listData.items}
+        title={listData.title}
+        onAddItem={addItem}
+        onDeleteItem={deleteItem}
+      />
+    )}
+  </ListFirestore>
+);
 
-  state = {
-    newItemValue: '',
-  }
-
-  addItem = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    this.props.onAddItem({
-      id: uuid(),
-      title: this.state.newItemValue,
-      category: '',
-      checked: false,
-    });
-
-    this.state.newItemValue = '';
-  };
-
-  deleteItem = (id) => {
-    this.props.onDeleteItem(id);
-  }
-
-  newItemChange = (e) => {
-    e.preventDefault();
-    this.setState({ newItemValue: e.target.value });
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.title}
-        <form
-          onSubmit={this.addItem}
-        >
-          <input
-            placeholder="Add item"
-            onChange={this.newItemChange}
-            value={this.state.newItemValue}
-          />
-          <input type="submit" value="submit" />
-        </form>
-        {Object.entries(this.props.items).map((kv) => {
-          const id = kv[0];
-          const item = kv[1];
-          return <Item key={id} id={id} title={item.title} onDelete={this.deleteItem} />;
-        })}
-        <br />
-      </div>
-    );
-  }
-}
-
-export default List;
