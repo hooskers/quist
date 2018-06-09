@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { render } from 'react-dom';
 import { css } from 'react-emotion';
-// import { Router } from '@reach/router';
+import { Router } from '@reach/router';
 import database, { provider, auth } from './firebase';
 
 import UserContext from './components/UserContext';
 import ListGallery from './components/ListGallery';
+
+import List from './components/List';
 
 const style = css`
   color: blue;
@@ -48,25 +50,28 @@ class App extends Component {
   }
 
   render() {
+    // If there is no user, show login button
     if (!this.state.user) {
-      return (
-        <button onClick={this.login}>login</button>
-      );
+      return <button onClick={this.login}>login</button>;
     }
 
     return (
-      this.state.name ?
-        <div>
-          <button onClick={this.logout}>logout</button>
-          <span>Name: {this.state.name}</span>
-          <UserContext.Provider value={this.state.user.uid}>
-            <ListGallery />
-          </UserContext.Provider>
-        </div>
-        :
-        <div>LOADING!!!!</div>
+      <Fragment>
+        <button onClick={this.logout}>logout</button>
+        <span>Name: {this.state.name}</span>
+        <UserContext.Provider value={this.state.user.uid}>
+          <ListGallery />
+        </UserContext.Provider>
+      </Fragment>
     );
   }
 }
 
-render(<App className={style} />, document.getElementById('app'));
+const Main = () => (
+  <Router>
+    <App path="/" />
+    <List path="list/:id" />
+  </Router>
+);
+
+render(<Main className={style} />, document.getElementById('app'));

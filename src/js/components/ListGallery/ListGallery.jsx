@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from '@reach/router';
 
 import List from '../List';
 
@@ -43,10 +44,11 @@ class ListGallery extends Component {
         </form>
         <h2>Your lists:</h2>
         {this.props.ownLists.map(list => (
-          <Fragment key={list.id}>
-            <button onClick={this.deleteList(list.id)}>Delete list</button>
-            <List list={list} />
-          </Fragment>
+          <Link key={list.id} to={`list/${list.id}`} list={list}>{list.title}</Link> //eslint-disable-line
+          // <Fragment key={list.id}>
+          //   <button onClick={this.deleteList(list.id)}>Delete list</button>
+          //   <List list={list} />
+          // </Fragment>
         ))}
         <h2>Shared lists:</h2>
         {this.props.sharedLists.map(list => (

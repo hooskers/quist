@@ -31,13 +31,18 @@ class ListGalleryFirestore extends Component {
 
     this.setState({ ownLists }); // eslint-disable-line
 
-    ownListsQuery.onSnapshot((querySnapshot) => {
+    this.offSnapshot = ownListsQuery.onSnapshot((querySnapshot) => {
       const newLists = [];
       querySnapshot.forEach((doc) => {
         newLists.push(doc.data());
       });
       this.setState( { ownLists: newLists }); //eslint-disable-line
     });
+  }
+
+  componentWillUnmount() {
+    // Stop listening to snapshot from Firestore
+    if (this.offSnapshot) this.offSnapshot();
   }
 
   updateStateFromDoc = async (doc) => {

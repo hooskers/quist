@@ -4,7 +4,7 @@ import firebase from 'firebase';
 
 class ListFirestore extends Component {
   static propTypes = {
-    list: PropTypes.object.isRequired, //eslint-disable-line
+    listId: PropTypes.string.isRequired,
     database: PropTypes.object, //eslint-disable-line
     children: PropTypes.func.isRequired,
   }
@@ -19,17 +19,25 @@ class ListFirestore extends Component {
 
   async componentDidMount() {
     const {
-      list,
+      listId,
       database,
     } = this.props;
 
-    const listDocRef = await database.collection('newLists').doc(list.id);
+    const listDocRef = await database.collection('newLists').doc(listId);
     const listDocSnapshot = await listDocRef.get();
     const listData = listDocSnapshot.data();
 
     this.setState({ listDocRef, list: { ...listData } }); //eslint-disable-line
 
-    listDocRef.onSnapshot({ includeMetadataChanges: true }, this.updateStateFromDoc);
+    this.offSnapshot = listDocRef.onSnapshot(
+      { includeMetadataChanges: true },
+      this.updateStateFromDoc,
+    );
+  }
+
+  componentWillUnmount() {
+    // Stop listening to snapshot from Firestore
+    if (this.offSnapshot) this.offSnapshot();
   }
 
   updateStateFromDoc = async (querySnapshot) => {
