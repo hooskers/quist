@@ -29,6 +29,7 @@ class App extends Component {
           .collection('users')
           .doc(uid)
           .get();
+
         const userData = userDoc.data();
 
         this.setState({ user: authUser, ...userData }); //eslint-disable-line
