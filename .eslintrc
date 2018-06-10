@@ -1,9 +1,17 @@
 {
 	"parser": "babel-eslint",
 	"plugins": [
-		"react"
+		"react",
+		"prettier"
 	],
 	"rules": {
+		"prettier/prettier": [
+			"error",
+			{
+				"singleQuote": true,
+				"trailingComma": "all"
+			}
+		],
 		"jsx-a11y/accessible-emoji": false,
 		"prop-types": [0],
 		"no-underscore-dangle": [
@@ -13,7 +21,13 @@
 			]}
 		]
 	},
-	"extends": "airbnb",
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"prettier",
+		"plugin:prettier/recommended",
+		"prettier/react"
+	],
 	"env": {
 		"browser": true
 	}
