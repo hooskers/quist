@@ -4,7 +4,9 @@ import List from './List';
 import ListFirestore from './Firestore';
 import database from '../../firebase';
 
-export default ({ id }) => ( //eslint-disable-line
+export default (
+  { id }, //eslint-disable-line
+) => (
   <ListFirestore listId={id} database={database}>
     {(listData, addItem, deleteItem) => (
       <List
@@ -16,4 +18,3 @@ export default ({ id }) => ( //eslint-disable-line
     )}
   </ListFirestore>
 );
-

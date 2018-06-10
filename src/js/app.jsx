@@ -21,11 +21,14 @@ class App extends Component {
   };
 
   componentDidMount() {
-    auth.onAuthStateChanged(async (authUser) => {
+    auth.onAuthStateChanged(async authUser => {
       if (authUser) {
         const { uid } = authUser;
 
-        const userDoc = await database.collection('users').doc(uid).get();
+        const userDoc = await database
+          .collection('users')
+          .doc(uid)
+          .get();
         const userData = userDoc.data();
 
         this.setState({ user: authUser, ...userData }); //eslint-disable-line
@@ -34,20 +37,18 @@ class App extends Component {
   }
 
   login = () => {
-    auth.signInWithPopup(provider)
-      .then((result) => {
-        this.setState({ user: result.user });
-      });
-  }
+    auth.signInWithPopup(provider).then(result => {
+      this.setState({ user: result.user });
+    });
+  };
 
   logout = () => {
-    auth.signOut()
-      .then(() => {
-        this.setState({
-          user: null,
-        });
+    auth.signOut().then(() => {
+      this.setState({
+        user: null,
       });
-  }
+    });
+  };
 
   render() {
     // If there is no user, show login button

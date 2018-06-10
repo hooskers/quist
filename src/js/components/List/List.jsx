@@ -15,9 +15,9 @@ class List extends Component {
 
   state = {
     newItemValue: '',
-  }
+  };
 
-  addItem = (e) => {
+  addItem = e => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -28,25 +28,23 @@ class List extends Component {
       checked: false,
     });
 
-    this.state.newItemValue = '';
+    this.setState({ newItemValue: '' });
   };
 
-  deleteItem = (id) => {
+  deleteItem = id => {
     this.props.onDeleteItem(id);
-  }
+  };
 
-  newItemChange = (e) => {
+  newItemChange = e => {
     e.preventDefault();
     this.setState({ newItemValue: e.target.value });
-  }
+  };
 
   render() {
     return (
       <div>
         <span>{this.props.title}</span>
-        <form
-          onSubmit={this.addItem}
-        >
+        <form onSubmit={this.addItem}>
           <input
             placeholder="Add item"
             onChange={this.newItemChange}
@@ -54,7 +52,7 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
-        {Object.entries(this.props.items).map((kv) => {
+        {Object.entries(this.props.items).map(kv => {
           const id = kv[0];
           const item = kv[1];
           return (

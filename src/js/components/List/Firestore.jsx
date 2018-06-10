@@ -7,7 +7,7 @@ class ListFirestore extends Component {
     listId: PropTypes.string.isRequired,
     database: PropTypes.object, //eslint-disable-line
     children: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     list: {
@@ -15,13 +15,10 @@ class ListFirestore extends Component {
       title: '',
     },
     listDocRef: undefined,
-  }
+  };
 
   async componentDidMount() {
-    const {
-      listId,
-      database,
-    } = this.props;
+    const { listId, database } = this.props;
 
     const listDocRef = await database.collection('newLists').doc(listId);
     const listDocSnapshot = await listDocRef.get();
@@ -40,7 +37,7 @@ class ListFirestore extends Component {
     if (this.offSnapshot) this.offSnapshot();
   }
 
-  updateStateFromDoc = async (querySnapshot) => {
+  updateStateFromDoc = async querySnapshot => {
     const listData = await querySnapshot.data();
 
     // List was deleted
@@ -49,9 +46,9 @@ class ListFirestore extends Component {
     this.setState({
       list: { ...listData },
     });
-  }
+  };
 
-  addItem = (item) => {
+  addItem = item => {
     const itemIdPath = `items.${item.id}`;
     this.state.listDocRef.update({
       [itemIdPath]: {
@@ -60,18 +57,16 @@ class ListFirestore extends Component {
         title: item.title,
       },
     });
-  }
+  };
 
-  deleteItem = (id) => {
+  deleteItem = id => {
     this.state.listDocRef.update({
       [`items.${id}`]: firebase.firestore.FieldValue.delete(),
     });
-  }
+  };
 
   render() {
-    return (
-      this.props.children(this.state.list, this.addItem, this.deleteItem)
-    );
+    return this.props.children(this.state.list, this.addItem, this.deleteItem);
   }
 }
 

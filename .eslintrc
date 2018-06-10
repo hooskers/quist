@@ -10,6 +10,7 @@
       }
     ],
     "jsx-a11y/accessible-emoji": false,
+    "react/display-name": "off",
     "prop-types": [0],
     "no-underscore-dangle": [
       2,

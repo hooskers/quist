@@ -10,31 +10,29 @@ class ListGallery extends Component {
     sharedLists: PropTypes.array.isRequired, //eslint-disable-line
     onAddList: PropTypes.func.isRequired,
     onDeleteList: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     newListValue: '',
-  }
+  };
 
-  newListChange = (e) => {
+  newListChange = e => {
     e.preventDefault();
     this.setState({ newListValue: e.target.value });
-  }
+  };
 
-  addList = (e) => {
+  addList = e => {
     e.preventDefault();
     this.props.onAddList([], this.state.newListValue);
     this.setState({ newListValue: '' });
-  }
+  };
 
   deleteList = listId => () => this.props.onDeleteList(listId);
 
   render() {
     return (
       <div>
-        <form
-          onSubmit={this.addList}
-        >
+        <form onSubmit={this.addList}>
           <input
             placeholder="Add list"
             onChange={this.newListChange}
@@ -44,7 +42,9 @@ class ListGallery extends Component {
         </form>
         <h2>Your lists:</h2>
         {this.props.ownLists.map(list => (
-          <Link key={list.id} to={`list/${list.id}`} list={list}>{list.title}</Link> //eslint-disable-line
+          <Link key={list.id} to={`list/${list.id}`} list={list}>
+            {list.title}
+          </Link> //eslint-disable-line
           // <Fragment key={list.id}>
           //   <button onClick={this.deleteList(list.id)}>Delete list</button>
           //   <List list={list} />
