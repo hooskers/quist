@@ -1,34 +1,31 @@
 {
-	"parser": "babel-eslint",
-	"plugins": [
-		"react",
-		"prettier"
-	],
-	"rules": {
-		"prettier/prettier": [
-			"error",
-			{
-				"singleQuote": true,
-				"trailingComma": "all"
-			}
-		],
-		"jsx-a11y/accessible-emoji": false,
-		"prop-types": [0],
-		"no-underscore-dangle": [
-			2,
-			{"allow": [
-				"__REDUX_DEVTOOLS_EXTENSION__"
-			]}
-		]
-	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:react/recommended",
-		"prettier",
-		"plugin:prettier/recommended",
-		"prettier/react"
-	],
-	"env": {
-		"browser": true
-	}
+  "parser": "babel-eslint",
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "trailingComma": "all"
+      }
+    ],
+    "jsx-a11y/accessible-emoji": false,
+    "prop-types": [0],
+    "no-underscore-dangle": [
+      2,
+      {
+        "allow": ["__REDUX_DEVTOOLS_EXTENSION__"]
+      }
+    ]
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
+    "prettier/react"
+  ],
+  "env": {
+    "browser": true
+  }
 }
