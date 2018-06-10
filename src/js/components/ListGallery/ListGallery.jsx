@@ -44,11 +44,7 @@ class ListGallery extends Component {
         {this.props.ownLists.map(list => (
           <Link key={list.id} to={`list/${list.id}`} list={list}>
             {list.title}
-          </Link> //eslint-disable-line
-          // <Fragment key={list.id}>
-          //   <button onClick={this.deleteList(list.id)}>Delete list</button>
-          //   <List list={list} />
-          // </Fragment>
+          </Link>
         ))}
         <h2>Shared lists:</h2>
         {this.props.sharedLists.map(list => (

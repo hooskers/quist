@@ -6,8 +6,13 @@ import Item from '../Item';
 
 class List extends Component {
   static propTypes = {
-    // TODO: Change `items` to Map?
-    items: PropTypes.object.isRequired, // eslint-disable-line
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+      }),
+    ),
     title: PropTypes.string.isRequired,
     onAddItem: PropTypes.func.isRequired,
     onDeleteItem: PropTypes.func.isRequired,
@@ -52,19 +57,15 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
-        {Object.entries(this.props.items).map(kv => {
-          const id = kv[0];
-          const item = kv[1];
-          return (
-            <Item
-              key={id}
-              id={id}
-              title={item.title}
-              checked={item.checked}
-              onDelete={this.deleteItem}
-            />
-          );
-        })}
+        {this.props.items.map(item => (
+          <Item
+            key={item.id}
+            id={item.id}
+            title={item.title}
+            checked={item.checked}
+            onDelete={this.deleteItem}
+          />
+        ))}
         <br />
       </div>
     );

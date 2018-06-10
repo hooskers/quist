@@ -11,7 +11,7 @@ class ListFirestore extends Component {
 
   state = {
     list: {
-      items: {},
+      items: [],
       title: '',
     },
     listDocRef: undefined,
@@ -24,7 +24,10 @@ class ListFirestore extends Component {
     const listDocSnapshot = await listDocRef.get();
     const listData = listDocSnapshot.data();
 
-    this.setState({ listDocRef, list: { ...listData } }); //eslint-disable-line
+    this.setState({
+      listDocRef,
+      list: { ...listData, items: this.itemsToArray(listData.items) },
+    });
 
     this.offSnapshot = listDocRef.onSnapshot(
       { includeMetadataChanges: true },
@@ -37,6 +40,12 @@ class ListFirestore extends Component {
     if (this.offSnapshot) this.offSnapshot();
   }
 
+  itemsToArray = items => {
+    return Object.entries(items).map(kv => {
+      return { ...kv[1], id: kv[0] };
+    });
+  };
+
   updateStateFromDoc = async querySnapshot => {
     const listData = await querySnapshot.data();
 
@@ -44,7 +53,7 @@ class ListFirestore extends Component {
     if (listData === undefined) return;
 
     this.setState({
-      list: { ...listData },
+      list: { ...listData, items: this.itemsToArray(listData.items) },
     });
   };
 
