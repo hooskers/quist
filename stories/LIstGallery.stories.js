@@ -19,7 +19,7 @@ storiesOf('ListGallery', module)
   ))
   .add('with lists', () => (
     <ListGallery
-      ownLists={generateLists(2)}
+      ownLists={generateLists()}
       sharedLists={generateLists(3)}
       onAddList={action('clicked')}
       onDeleteList={action('clicked')}

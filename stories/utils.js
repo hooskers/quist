@@ -11,7 +11,7 @@ const generateItems = count => {
   return items;
 };
 
-const generateLists = (listCount, itemCount = 5) => {
+const generateLists = (listCount = 5, itemCount = 5) => {
   let lists = [];
 
   for (let i = 0; i < listCount; i++) {
