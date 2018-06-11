@@ -7,6 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: {
     app: './src/js/app.jsx',
+    firebase: './src/js/firebase.js',
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -28,7 +29,12 @@ module.exports = {
     extensions: ['.js', '.jsx'],
   },
   output: {
-    filename: 'app.bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'public'),
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 };
