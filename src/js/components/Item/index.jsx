@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Item = ({ id, title, checked, onDelete }) => {
-  //eslint-disable-line
   return (
     <div className="item">
       <span>{title}</span>

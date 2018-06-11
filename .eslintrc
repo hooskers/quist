@@ -12,6 +12,7 @@
     "jsx-a11y/accessible-emoji": false,
     "react/display-name": "off",
     "prop-types": [0],
+    "no-console": "off",
     "no-underscore-dangle": [
       2,
       {

@@ -1,8 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from '@reach/router';
-
-import List from '../List';
 
 class ListGallery extends Component {
   static propTypes = {
@@ -48,10 +46,9 @@ class ListGallery extends Component {
         ))}
         <h2>Shared lists:</h2>
         {this.props.sharedLists.map(list => (
-          <Fragment key={list.id}>
-            <button onClick={this.deleteList(list.id)}>Delete list</button>
-            <List list={list} />
-          </Fragment>
+          <Link key={list.id} to={`list/${list.id}`} list={list}>
+            {list.title}
+          </Link>
         ))}
       </div>
     );

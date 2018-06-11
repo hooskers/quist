@@ -5,7 +5,7 @@ import firebase from 'firebase';
 class ListFirestore extends Component {
   static propTypes = {
     listId: PropTypes.string.isRequired,
-    database: PropTypes.object, //eslint-disable-line
+    database: PropTypes.instanceOf(firebase.firestore.Firestore),
     children: PropTypes.func.isRequired,
   };
 
@@ -20,7 +20,7 @@ class ListFirestore extends Component {
   async componentDidMount() {
     const { listId, database } = this.props;
 
-    const listDocRef = await database.collection('newLists').doc(listId);
+    const listDocRef = await database.collection('lists').doc(listId);
     const listDocSnapshot = await listDocRef.get();
     const listData = listDocSnapshot.data();
 

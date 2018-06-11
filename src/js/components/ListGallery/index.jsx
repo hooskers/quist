@@ -4,7 +4,7 @@ import ListGallery from './ListGallery';
 import ListGalleryFirestore from './Firestore';
 import UserContext from '../UserContext';
 
-export default () => (
+const ComposedComponent = () => (
   <UserContext.Consumer>
     {userId => (
       <ListGalleryFirestore userId={userId}>
@@ -20,3 +20,5 @@ export default () => (
     )}
   </UserContext.Consumer>
 );
+
+export default ComposedComponent;

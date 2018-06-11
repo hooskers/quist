@@ -17,41 +17,93 @@ class ListGalleryFirestore extends Component {
   async componentDidMount() {
     const { userId } = this.props;
 
+    // Get lists owned by user
     const ownListsQuery = await database
-      .collection('newLists')
+      .collection('lists')
       .where('owner', '==', userId);
 
-    const ownLists = [];
+    let ownLists = [];
 
     const ownListsQuerySnapshot = await ownListsQuery.get();
     ownListsQuerySnapshot.forEach(doc => {
-      ownLists.push(doc.data());
+      let list = doc.data();
+      ownLists.push({ ...list, items: this.itemsToArray(list.items) });
     });
 
-    this.setState({ ownLists }); // eslint-disable-line
+    // Get lists shared with users
+    const sharedListsQuery = await database
+      .collection('lists')
+      .where(`sharedUsers.${userId}`, '==', true);
 
-    this.offSnapshot = ownListsQuery.onSnapshot(querySnapshot => {
-      const newLists = [];
-      querySnapshot.forEach(doc => {
-        newLists.push(doc.data());
-      });
-      this.setState({ ownLists: newLists }); //eslint-disable-line
+    let sharedLists = [];
+
+    const sharedListsQuerySnapshot = await sharedListsQuery.get();
+    sharedListsQuerySnapshot.forEach(doc => {
+      let list = doc.data();
+      sharedLists.push({ ...list, items: this.itemsToArray(list.items) });
     });
+
+    this.setState({ ownLists, sharedLists });
+
+    // Watch user's lists for updates
+    this.offOwnListsSnapshot = ownListsQuery.onSnapshot(
+      { includeQueryMetadataChanges: true },
+      this.updateOwnListsFromSnapshot,
+    );
+
+    // Watch user's shared lists for updates
+    this.offSharedListsSnapshot = sharedListsQuery.onSnapshot(
+      { includeQueryMetadataChanges: true },
+      this.updateSharedListsFromSnapshot,
+    );
   }
 
   componentWillUnmount() {
     // Stop listening to snapshot from Firestore
-    if (this.offSnapshot) this.offSnapshot();
+    if (this.offOwnListsSnapshot) this.offOwnListsSnapshot();
+    if (this.offSharedListsSnapshot) this.offSharedListsSnapshot();
   }
 
-  updateStateFromDoc = async doc => {
-    const userData = await doc.data();
-
-    this.setState({
-      ownLists: userData.ownLists,
-      sharedLists: userData.sharedLists,
+  itemsToArray = items => {
+    return Object.entries(items).map(kv => {
+      return { ...kv[1], id: kv[0] };
     });
   };
+
+  updateOwnListsFromSnapshot = async querySnapshot => {
+    const ownLists = querySnapshot.docs.map(doc => {
+      const list = doc.data();
+      return { ...list, items: this.itemsToArray(list.items) };
+    });
+
+    this.setState({ ownLists });
+  };
+
+  updateSharedListsFromSnapshot = async querySnapshot => {
+    const sharedLists = querySnapshot.docs.map(doc => {
+      const list = doc.data();
+      return { ...list, items: this.itemsToArray(list.items) };
+    });
+
+    this.setState({ sharedLists });
+  };
+
+  // updateStateFromDoc = async querySnapshot => {
+  //   debugger; // eslint-disable-line
+  //   const userData = await querySnapshot.data();
+  //   console.log(userData); //eslint-disable-line
+
+  //   // this.setState({
+  //   //   ownLists: userData.ownLists.map(list => ({
+  //   //     ...list,
+  //   //     items: this.itemsToArray(list.items),
+  //   //   })),
+  //   //   sharedLists: userData.sharedLists.map(list => ({
+  //   //     ...list,
+  //   //     items: this.itemsToArray(list.items),
+  //   //   })),
+  //   // });
+  // };
 
   addListDocument = (items, title) => {
     const listId = uuid();
