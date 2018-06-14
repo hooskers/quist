@@ -7,7 +7,7 @@ const Item = ({ id, title, checked, onDelete }) => {
       <span>{title}</span>
       <input type="checkbox" checked={checked} />
       <button aria-label="close" onClick={() => onDelete(id)}>
-        ❌
+        Delete
       </button>
     </div>
   );
