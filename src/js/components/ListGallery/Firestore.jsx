@@ -1,12 +1,13 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
-import database from '../../firebase';
+import firebase from 'firebase';
 
 class ListGalleryFirestore extends Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
+    database: PropTypes.instanceOf(firebase.firestore.Firestore).isRequired,
   };
 
   state = {
@@ -15,7 +16,7 @@ class ListGalleryFirestore extends Component {
   };
 
   async componentDidMount() {
-    const { userId } = this.props;
+    const { userId, database } = this.props;
 
     // Get lists owned by user
     const ownListsQuery = await database
@@ -108,7 +109,7 @@ class ListGalleryFirestore extends Component {
   addListDocument = (items, title) => {
     const listId = uuid();
 
-    database
+    this.database
       .collection('newLists')
       .doc(listId)
       .set({
@@ -123,7 +124,7 @@ class ListGalleryFirestore extends Component {
   };
 
   deleteListDocument = listId => {
-    database
+    this.database
       .collection('newLists')
       .doc(listId)
       .delete()

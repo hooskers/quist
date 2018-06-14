@@ -5,6 +5,7 @@ import { Router } from '@reach/router';
 import database, { provider, auth } from './firebase';
 
 import UserContext from './components/UserContext';
+import FirestoreContext from './components/FirestoreContext';
 import ListGallery from './components/ListGallery';
 
 import List from './components/List';
@@ -61,9 +62,11 @@ class App extends Component {
       <Fragment>
         <button onClick={this.logout}>logout</button>
         <span>Name: {this.state.name}</span>
-        <UserContext.Provider value={this.state.user.uid}>
-          <ListGallery />
-        </UserContext.Provider>
+        <FirestoreContext.Provider value={database}>
+          <UserContext.Provider value={this.state.user.uid}>
+            <ListGallery />
+          </UserContext.Provider>
+        </FirestoreContext.Provider>
       </Fragment>
     );
   }

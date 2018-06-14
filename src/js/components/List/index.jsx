@@ -4,18 +4,21 @@ import PropTypes from 'prop-types';
 import List from './List';
 import ListFirestore from './Firestore';
 import database from '../../firebase';
+import FirestoreContext from '../FirestoreContext';
 
 const ComposedComponent = ({ id }) => (
-  <ListFirestore listId={id} database={database}>
-    {(listData, addItem, deleteItem) => (
-      <List
-        items={listData.items}
-        title={listData.title}
-        onAddItem={addItem}
-        onDeleteItem={deleteItem}
-      />
-    )}
-  </ListFirestore>
+  <FirestoreContext.Provider value={database}>
+    <ListFirestore listId={id} database={database}>
+      {(listData, addItem, deleteItem) => (
+        <List
+          items={listData.items}
+          title={listData.title}
+          onAddItem={addItem}
+          onDeleteItem={deleteItem}
+        />
+      )}
+    </ListFirestore>
+  </FirestoreContext.Provider>
 );
 
 ComposedComponent.propTypes = {
