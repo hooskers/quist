@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Item = ({ id, title, checked, onDelete }) => {
+const Item = ({ id, title, checked, onCheck, onDelete }) => {
   return (
     <div className="item">
       <span>{title}</span>
-      <input type="checkbox" checked={checked} />
+      <input
+        type="checkbox"
+        title={checked ? 'Uncheck item' : 'Check off item'}
+        checked={checked}
+        onClick={() => {
+          onCheck(id);
+        }}
+      />
       <button aria-label="close" onClick={() => onDelete(id)}>
         Delete
       </button>
@@ -17,6 +24,7 @@ Item.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
+  onCheck: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 

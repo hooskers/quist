@@ -63,6 +63,11 @@ class List extends Component {
             id={item.id}
             title={item.title}
             checked={item.checked}
+            onCheck={() => {
+              console.log(
+                'Change this function! Need to change the `checked` prop',
+              );
+            }}
             onDelete={this.deleteItem}
           />
         ))}
