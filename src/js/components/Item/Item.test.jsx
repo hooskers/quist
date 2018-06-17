@@ -33,26 +33,34 @@ test('clicking delete button calls passed function', () => {
   expect(onDeleteDummy).toHaveBeenCalledWith(defaultProps.id);
 });
 
-test('clicking checkbox calls passed function', () => {
+test('clicking unchecked box calls passed function and unchecks box', () => {
   const onCheckDummy = jest.fn();
 
   const { getByTitle, container } = render(
     <Item {...defaultProps} onCheck={onCheckDummy} />,
   );
 
-  Simulate.click(getByTitle('Check off item'));
+  Simulate.change(getByTitle('Check off item'));
 
   expect(onCheckDummy).toHaveBeenCalledTimes(1);
   expect(onCheckDummy).toHaveBeenCalledWith(defaultProps.id);
-  expect(container.querySelector('input[type="checkbox"]')).toHaveAttribute(
+  expect(container.querySelector('input[type="checkbox"]')).toHaveProperty(
     'checked',
   );
+});
 
-  Simulate.click(getByTitle('Uncheck item'));
+test('clicking checked box calls passed function and unchecks box', () => {
+  const onCheckDummy = jest.fn();
 
-  expect(onCheckDummy).toHaveBeenCalledTimes(2);
+  const { getByTitle, container } = render(
+    <Item {...defaultProps} checked={true} onCheck={onCheckDummy} />,
+  );
+
+  Simulate.change(getByTitle('Uncheck item'), { target: { checked: false } });
+
+  expect(onCheckDummy).toHaveBeenCalledTimes(1);
   expect(onCheckDummy).toHaveBeenCalledWith(defaultProps.id);
-  expect(container.querySelector('input[type="checkbox"]')).not.toHaveAttribute(
+  expect(container.querySelector('input[type="checkbox"]')).not.toHaveProperty(
     'checked',
   );
 });

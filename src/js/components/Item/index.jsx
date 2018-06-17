@@ -8,8 +8,8 @@ const Item = ({ id, title, checked, onCheck, onDelete }) => {
       <input
         type="checkbox"
         title={checked ? 'Uncheck item' : 'Check off item'}
-        checked={checked}
-        onClick={() => {
+        defaultChecked={checked}
+        onChange={() => {
           onCheck(id);
         }}
       />
