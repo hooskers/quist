@@ -9,7 +9,8 @@ const Item = ({ id, title, checked, onCheck, onDelete }) => {
         type="checkbox"
         title={checked ? 'Uncheck item' : 'Check off item'}
         defaultChecked={checked}
-        onChange={() => {
+        onChange={e => {
+          e.stopPropagation();
           onCheck(id);
         }}
       />

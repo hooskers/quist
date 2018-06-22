@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, Simulate } from 'react-testing-library';
+import { render, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 
 import Item from '../Item';
@@ -21,39 +21,41 @@ test('Item displays title', () => {
 });
 
 test('clicking delete button calls passed function', () => {
-  const onDeleteDummy = jest.fn();
+  const onDeleteDummy = jest
+    .fn()
+    .mockReturnValue(console.log('sadf'))
+    .mockName('onDeleteDummy');
 
   const { getByText } = render(
     <Item {...defaultProps} onDelete={onDeleteDummy} />,
   );
 
-  Simulate.click(getByText('Delete'));
+  fireEvent(
+    getByText('Delete'),
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
 
   expect(onDeleteDummy).toHaveBeenCalledTimes(1);
   expect(onDeleteDummy).toHaveBeenCalledWith(defaultProps.id);
 });
 
-test('clicking unchecked box calls passed function and unchecks box', () => {
-  const onCheckDummy = jest.fn();
+test('clicking checkbox calls passed function', () => {
+  const onCheckDummy = jest.fn().mockName('onCheckDummy');
 
   const { getByTitle } = render(
     <Item {...defaultProps} onCheck={onCheckDummy} />,
   );
 
-  Simulate.change(getByTitle('Check off item'), { target: { checked: true } });
-
-  expect(onCheckDummy).toHaveBeenCalledTimes(1);
-  expect(onCheckDummy).toHaveBeenCalledWith(defaultProps.id);
-});
-
-test('clicking checked box calls passed function and unchecks box', () => {
-  const onCheckDummy = jest.fn();
-
-  const { getByTitle } = render(
-    <Item {...defaultProps} checked={true} onCheck={onCheckDummy} />,
+  fireEvent(
+    getByTitle('Check off item'),
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    }),
   );
-
-  Simulate.change(getByTitle('Uncheck item'), { target: { checked: false } });
 
   expect(onCheckDummy).toHaveBeenCalledTimes(1);
   expect(onCheckDummy).toHaveBeenCalledWith(defaultProps.id);
