@@ -15,6 +15,9 @@ firebase.initializeApp(config);
 const database = firebase.firestore();
 database.settings({ timestampsInSnapshots: true });
 
-export const provider = new firebase.auth.GoogleAuthProvider();
-export const auth = firebase.auth();
+const messaging = firebase.messaging();
+const provider = new firebase.auth.GoogleAuthProvider();
+const auth = firebase.auth();
+
+export { provider, auth, messaging };
 export default database;
