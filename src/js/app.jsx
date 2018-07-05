@@ -28,6 +28,7 @@ class App extends Component {
       if (authUser) {
         const { uid } = authUser;
 
+        // Get user info and set it on state
         const userDoc = await database
           .collection('users')
           .doc(uid)
@@ -37,6 +38,7 @@ class App extends Component {
 
         this.setState({ user: authUser, ...userData });
 
+        // Setup all the required stuff for FCM
         messaging.usePublicVapidKey(
           'BDeROq70Pj7fXV3hAvYraUfmpQh4VdNf0z-9mVg9-NN-_7EGa6s2owihW4dXuGDsu52tNlcU7u454VaUVB5aatI',
         );
@@ -141,9 +143,6 @@ const setupServiceWorker = () => {
 
 const setupMessaging = registration => {
   registration.pushManager.subscribe({ userVisibleOnly: true });
-  // messaging.onMessage(payload => {
-  //   console.log(`message received: ${payload}`);
-  // });
 };
 
 const storeToken = (token, uid) => {
