@@ -6,9 +6,6 @@ importScripts(
   'https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js',
 );
 
-// workbox.skipWaiting();
-// workbox.clientsClaim();
-
 console.log('wttffff');
 
 self.addEventListener('message', event => {
@@ -22,34 +19,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// messaging
-//   .getToken()
-//   .then(token => {
-//     console.log(token);
-//   })
-//   .catch(e => console.warn(e));
-
-// messaging.onTokenRefresh(() => {
-//   console.log('Token refreshed');
-//   messaging
-//     .getToken()
-//     .then(token => {
-//       console.log(token);
-//     })
-//     .catch(e => console.log(e));
-// });
-
-// messaging.onMessage(payload => {
-//   console.log(`message received: ${payload}`);
-// });
-
 messaging.setBackgroundMessageHandler(payload => {
-  console.log(
-    '[firebase-messaging-sw.js] Received background message ',
-    payload,
-  );
-
-  return self.registration.showNotification('Test notif title', {
-    body: 'Test notif body',
-  });
+  console.log('[firebase-messaging-sw.js] Received background message ');
+  console.log({ ...payload });
 });
