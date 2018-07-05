@@ -24,15 +24,11 @@ module.exports = {
       background_color: '#ffffff',
       gcm_sender_id: '103953800507',
     }),
-    // new WorkboxPlugin.InjectManifest({
-    //   swSrc: './src/js/firebase-messaging-sw.js',
-    //   swDest: 'firebase-messaging-sw.js',
-    // }),
   ],
   module: {
     rules: [
       {
-        test: /firebase-messaging-sw/,
+        test: /firebase-messaging-sw\.js/,
         use: [
           {
             loader: 'file-loader',

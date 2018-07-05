@@ -1,4 +1,4 @@
-import 'file-loader!./firebase-messaging-sw.js';
+import './firebase-messaging-sw.js';
 
 import React, { Component, Fragment } from 'react';
 import { render } from 'react-dom';
