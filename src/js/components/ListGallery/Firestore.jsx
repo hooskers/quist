@@ -110,7 +110,7 @@ class ListGalleryFirestore extends Component {
     const listId = uuid();
 
     this.database
-      .collection('newLists')
+      .collection('lists')
       .doc(listId)
       .set({
         id: listId,
@@ -125,7 +125,7 @@ class ListGalleryFirestore extends Component {
 
   deleteListDocument = listId => {
     this.database
-      .collection('newLists')
+      .collection('lists')
       .doc(listId)
       .delete()
       .catch(error => {

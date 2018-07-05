@@ -92,7 +92,34 @@ class App extends Component {
 
         const userData = userDoc.data();
 
-        this.setState({ user: authUser, ...userData }); //eslint-disable-line
+        this.setState({ user: authUser, ...userData });
+
+        messaging.usePublicVapidKey(
+          'BDeROq70Pj7fXV3hAvYraUfmpQh4VdNf0z-9mVg9-NN-_7EGa6s2owihW4dXuGDsu52tNlcU7u454VaUVB5aatI',
+        );
+
+        messaging
+          .requestPermission()
+          .then(() => {
+            console.log('Notification permission granted.');
+            messaging.getToken().then(token => {
+              console.log(`Got token: ${token}`);
+              console.log(`User ID: ${uid}}`);
+              console.log({ ...userData });
+              database
+                .collection('users')
+                .doc(uid)
+                .update({ fcm_token: token })
+                .then(() => console.log('Added FCM token!'))
+                .catch(() => console.log('error updating FCM token!'));
+              setupServiceWorker();
+            });
+            // TODO(developer): Retrieve an Instance ID token for use with FCM.
+            // ...
+          })
+          .catch(function(err) {
+            console.warn('Unable to get permission to notify.', err);
+          });
       }
     });
   }
@@ -173,25 +200,6 @@ const setupMessaging = registration => {
 
 const init = () => {
   render(<Main className={style} />, document.getElementById('app'));
-
-  messaging.usePublicVapidKey(
-    'BDeROq70Pj7fXV3hAvYraUfmpQh4VdNf0z-9mVg9-NN-_7EGa6s2owihW4dXuGDsu52tNlcU7u454VaUVB5aatI',
-  );
-
-  messaging
-    .requestPermission()
-    .then(() => {
-      console.log('Notification permission granted.');
-      messaging.getToken().then(token => {
-        console.log(`Got token: ${token}`);
-        setupServiceWorker();
-      });
-      // TODO(developer): Retrieve an Instance ID token for use with FCM.
-      // ...
-    })
-    .catch(function(err) {
-      console.warn('Unable to get permission to notify.', err);
-    });
 };
 
 init();
