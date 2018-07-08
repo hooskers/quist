@@ -58,6 +58,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "emotion": "^9.2.3",
     "firebase": "^4.13.1",
+    "firebase-functions": "^1.1.0",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
