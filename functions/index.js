@@ -6,23 +6,73 @@ admin.initializeApp();
 const token =
   'flXB0ExPV2Q:APA91bGhHe6s5boxOHw4TNJ2EoXumneQaSkD43MnIeNj0y_0aNrW7gzzSzoQWHAKjK-zazz8M-i8MHskzJk-wqsYJSSXCJsv2E5qWa2p0ymjofViR52pou4c0a8K9ev2XqA0ytWPsij_';
 
-exports.testFunction = functions.firestore
-  .document('test/yeah')
-  .onUpdate(() => {
-    const payload = {
-      notification: {
-        body: 'Click to view list',
-        title: 'A list has been shared with you',
-        click_action: 'localhost:8080',
-      },
-      data: {
-        custom_key_1: 'Data for key one',
-        custom_key_2: 'Helloooo',
-      },
-    };
+exports.notifyNewSharedList = functions.firestore
+  .document('lists/{listId}') // Can I use `listId` in the function?
+  .onUpdate(change => {
+    const oldData = change.before.data();
+    const newData = change.after.data();
 
-    return admin.messaging().sendToDevice(token, payload);
+    let newUserIds;
+    newUserIds = Object.keys(newData).filter(newId => {
+      return !oldData.sharedUsers.hasOwnProperty(newId);
+    });
+
+    let promises = [];
+    // let tokens = [];
+
+    newUserIds.forEach(id => {
+      promises.push(
+        admin
+          .firestore()
+          .doc(`users/${id}`)
+          .get()
+      );
+      // .then(userSnapshot => {
+      //   let userData = userSnapshot.data();
+      //   tokens.push(userData.fcm_token);
+      // })
+      // .catch(err => console.error(err));
+    });
+
+    Promise.all(promises)
+      .then(snapshots => {
+        return snapshots.forEach(snapshot => {
+          const userData = snapshot.data();
+          const payload = {
+            notification: {
+              body: 'Click to view list',
+              title: 'A list has been shared with you',
+              click_action: 'localhost:8080',
+            },
+            data: {
+              custom_key_1: 'Data for key one',
+              custom_key_2: 'Helloooo',
+            },
+          };
+
+          admin.messaging().sendToDevice(userData.fcm_token, payload);
+        });
+      })
+      .catch(err => console.err(err));
   });
+
+// exports.testFunction = functions.firestore
+//   .document('test/yeah')
+//   .onUpdate(() => {
+//     const payload = {
+//       notification: {
+//         body: 'Click to view list',
+//         title: 'A list has been shared with you',
+//         click_action: 'localhost:8080',
+//       },
+//       data: {
+//         custom_key_1: 'Data for key one',
+//         custom_key_2: 'Helloooo',
+//       },
+//     };
+
+//     return admin.messaging().sendToDevice(token, payload);
+//   });
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
