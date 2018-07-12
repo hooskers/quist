@@ -13,7 +13,7 @@ exports.notifyNewSharedList = functions.firestore
     const newData = change.after.data();
 
     let newUserIds;
-    newUserIds = Object.keys(newData).filter(newId => {
+    newUserIds = Object.keys(newData.sharedUsers).filter(newId => {
       return !oldData.sharedUsers.hasOwnProperty(newId);
     });
 
@@ -34,7 +34,7 @@ exports.notifyNewSharedList = functions.firestore
       // .catch(err => console.error(err));
     });
 
-    Promise.all(promises)
+    return Promise.all(promises)
       .then(snapshots => {
         return snapshots.forEach(snapshot => {
           const userData = snapshot.data();
@@ -53,7 +53,7 @@ exports.notifyNewSharedList = functions.firestore
           admin.messaging().sendToDevice(userData.fcm_token, payload);
         });
       })
-      .catch(err => console.err(err));
+      .catch(err => console.error(err));
   });
 
 // exports.testFunction = functions.firestore
