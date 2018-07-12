@@ -50,7 +50,9 @@ exports.notifyNewSharedList = functions.firestore
             },
           };
 
-          admin.messaging().sendToDevice(userData.fcm_token, payload);
+          Object.keys(userData.fcm_tokens).forEach(token => {
+            admin.messaging().sendToDevice(token, payload);
+          });
         });
       })
       .catch(err => console.error(err));
