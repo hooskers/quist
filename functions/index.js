@@ -57,7 +57,9 @@ exports.notifyNewSharedList = functions.firestore
               .messaging()
               .sendToDevice(token, payload)
               .then(() => console.log("Message successfully sent."))
-              .catch(response => console.log(Object.keys(response)));
+              .catch(response =>
+                console.error(`Error sending message to ${token}`)
+              );
           });
         });
       })
