@@ -1,13 +1,15 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+/* eslint-disable */
+
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
 admin.initializeApp();
 
 const token =
-  'flXB0ExPV2Q:APA91bGhHe6s5boxOHw4TNJ2EoXumneQaSkD43MnIeNj0y_0aNrW7gzzSzoQWHAKjK-zazz8M-i8MHskzJk-wqsYJSSXCJsv2E5qWa2p0ymjofViR52pou4c0a8K9ev2XqA0ytWPsij_';
+  "flXB0ExPV2Q:APA91bGhHe6s5boxOHw4TNJ2EoXumneQaSkD43MnIeNj0y_0aNrW7gzzSzoQWHAKjK-zazz8M-i8MHskzJk-wqsYJSSXCJsv2E5qWa2p0ymjofViR52pou4c0a8K9ev2XqA0ytWPsij_";
 
 exports.notifyNewSharedList = functions.firestore
-  .document('lists/{listId}') // Can I use `listId` in the function?
+  .document("lists/{listId}") // Can I use `listId` in the function?
   .onUpdate(change => {
     const oldData = change.before.data();
     const newData = change.after.data();
@@ -25,7 +27,7 @@ exports.notifyNewSharedList = functions.firestore
         admin
           .firestore()
           .doc(`users/${id}`)
-          .get()
+          .get() // eslint-disable-line
       );
       // .then(userSnapshot => {
       //   let userData = userSnapshot.data();
@@ -40,18 +42,22 @@ exports.notifyNewSharedList = functions.firestore
           const userData = snapshot.data();
           const payload = {
             notification: {
-              body: 'Click to view list',
-              title: 'A list has been shared with you',
-              click_action: 'localhost:8080',
+              body: "Click to view list",
+              title: "A list has been shared with you",
+              click_action: "localhost:8080"
             },
             data: {
-              custom_key_1: 'Data for key one',
-              custom_key_2: 'Helloooo',
-            },
+              custom_key_1: "Data for key one",
+              custom_key_2: "Helloooo"
+            }
           };
 
           Object.keys(userData.fcm_tokens).forEach(token => {
-            admin.messaging().sendToDevice(token, payload);
+            admin
+              .messaging()
+              .sendToDevice(token, payload)
+              .then(() => console.log("Message successfully sent."))
+              .catch(response => console.log(Object.keys(response)));
           });
         });
       })
