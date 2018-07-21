@@ -146,10 +146,11 @@ const setupMessaging = registration => {
 };
 
 const storeToken = (token, uid) => {
+  const key = `fcm_tokens.${token}`;
   return database
     .collection('users')
     .doc(uid)
-    .update({ fcm_token: token });
+    .update({ [key]: true });
 };
 
 const monitorToken = uid => {
