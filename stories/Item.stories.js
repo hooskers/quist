@@ -14,6 +14,7 @@ storiesOf('Item', module)
       title={'This is a list item'}
       checked={false}
       onDelete={action('clicked')}
+      onCheck={action('check clicked')}
     />
   ))
   .add('checked', () => (
@@ -22,5 +23,6 @@ storiesOf('Item', module)
       title={'This is a checked list item'}
       checked={true}
       onDelete={action('clicked')}
+      onCheck={action('check clicked')}
     />
   ));
