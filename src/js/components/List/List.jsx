@@ -64,6 +64,7 @@ class List extends Component {
             title={item.title}
             checked={item.checked}
             onCheck={() => {
+              // Need to make this change on the Firebase item
               console.log(
                 'Change this function! Need to change the `checked` prop',
               );
