@@ -20,7 +20,7 @@ storiesOf('Item', module)
     <Item
       id={'testID'}
       title={'This is a checked list item'}
-      checked={false}
+      checked={true}
       onDelete={action('clicked')}
     />
   ));
