@@ -27,6 +27,7 @@ class App extends Component {
     auth.onAuthStateChanged(async authUser => {
       if (authUser) {
         const { uid } = authUser;
+        console.log(authUser);
 
         // Get user info and set it on state
         const userDoc = await database
@@ -36,39 +37,59 @@ class App extends Component {
 
         const userData = userDoc.data();
 
-        this.setState({ user: authUser, ...userData });
+        console.log({ ...userData });
+        console.log({ ...authUser });
 
-        // Setup all the required stuff for FCM
-        messaging.usePublicVapidKey(
-          'BDeROq70Pj7fXV3hAvYraUfmpQh4VdNf0z-9mVg9-NN-_7EGa6s2owihW4dXuGDsu52tNlcU7u454VaUVB5aatI',
-        );
+        if (!userData) {
+          // New user, add their info
+          console.log('Adding new user');
+          await database
+            .collection('users')
+            .doc(authUser.uid)
+            .set({
+              name: authUser.displayName,
+              email: authUser.email,
+              avatar: authUser.photoURL,
+              fcm_tokens: {},
+              ownLists: {},
+            })
+            .then(() => console.log('New user document added to collection!'));
+        } else {
+          console.log('User exists!');
+          this.setState({ user: authUser, ...userData });
 
-        messaging
-          .requestPermission()
-          .then(() => {
-            console.log('Notification permission granted.');
-            messaging.getToken().then(token => {
-              console.log(`Got token: ${token}`);
-              storeToken(token, uid)
-                .then(() => {
-                  console.log('Added FCM token!');
-                  messaging.onMessage(payload => {
-                    console.log('Received message!:');
-                    console.log({ ...payload });
-                  });
-                })
-                .catch(() => console.log('error updating FCM token!'));
+          // Setup all the required stuff for FCM
+          messaging.usePublicVapidKey(
+            'BDeROq70Pj7fXV3hAvYraUfmpQh4VdNf0z-9mVg9-NN-_7EGa6s2owihW4dXuGDsu52tNlcU7u454VaUVB5aatI',
+          );
 
-              monitorToken(uid);
+          messaging
+            .requestPermission()
+            .then(() => {
+              console.log('Notification permission granted.');
+              messaging.getToken().then(token => {
+                console.log(`Got token: ${token}`);
+                storeToken(token, uid)
+                  .then(() => {
+                    console.log('Added FCM token!');
+                    messaging.onMessage(payload => {
+                      console.log('Received message!:');
+                      console.log({ ...payload });
+                    });
+                  })
+                  .catch(() => console.log('error updating FCM token!'));
 
-              if ('serviceWorker' in navigator) {
-                setupServiceWorker();
-              }
+                monitorToken(uid);
+
+                if ('serviceWorker' in navigator) {
+                  setupServiceWorker();
+                }
+              });
+            })
+            .catch(function(err) {
+              console.warn('Unable to get permission to notify.', err);
             });
-          })
-          .catch(function(err) {
-            console.warn('Unable to get permission to notify.', err);
-          });
+        }
       }
     });
   }
@@ -96,7 +117,7 @@ class App extends Component {
     return (
       <Fragment>
         <button onClick={this.logout}>logout</button>
-        <span>Name: {this.state.name}</span>
+        <span>Name: {this.state.user.email}</span>
         <FirestoreContext.Provider value={database}>
           <UserContext.Provider value={this.state.user.uid}>
             <ListGallery />
