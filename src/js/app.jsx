@@ -40,22 +40,7 @@ class App extends Component {
         console.log({ ...userData });
         console.log({ ...authUser });
 
-        if (!userData) {
-          // New user, add their info
-          console.log('Adding new user');
-          await database
-            .collection('users')
-            .doc(authUser.uid)
-            .set({
-              name: authUser.displayName,
-              email: authUser.email,
-              avatar: authUser.photoURL,
-              fcm_tokens: {},
-              ownLists: {},
-            })
-            .then(() => console.log('New user document added to collection!'));
-        } else {
-          console.log('User exists!');
+        const userSetup = () => {
           this.setState({ user: authUser, ...userData });
 
           // Setup all the required stuff for FCM
@@ -89,6 +74,28 @@ class App extends Component {
             .catch(function(err) {
               console.warn('Unable to get permission to notify.', err);
             });
+        };
+
+        if (!userData) {
+          // New user, add their info
+          console.log('Adding new user');
+          await database
+            .collection('users')
+            .doc(authUser.uid)
+            .set({
+              name: authUser.displayName,
+              email: authUser.email,
+              avatar: authUser.photoURL,
+              fcm_tokens: {},
+              ownLists: {},
+            })
+            .then(() => {
+              console.log('New user document added to collection!');
+              userSetup();
+            });
+        } else {
+          console.log('User exists!');
+          userSetup();
         }
       }
     });
