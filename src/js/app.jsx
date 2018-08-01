@@ -26,13 +26,13 @@ class App extends Component {
   componentDidMount() {
     auth.onAuthStateChanged(async authUser => {
       if (authUser) {
-        const { email } = authUser;
+        const { uid } = authUser;
         console.log(authUser);
 
         // Get user info and set it on state
         const userDoc = await database
           .collection('users')
-          .doc(email)
+          .doc(uid)
           .get();
 
         const userData = userDoc.data();
@@ -54,7 +54,7 @@ class App extends Component {
               console.log('Notification permission granted.');
               messaging.getToken().then(token => {
                 console.log(`Got token: ${token}`);
-                storeToken(token, email)
+                storeToken(token, uid)
                   .then(() => {
                     console.log('Added FCM token!');
                     messaging.onMessage(payload => {
@@ -64,7 +64,7 @@ class App extends Component {
                   })
                   .catch(() => console.log('error updating FCM token!'));
 
-                monitorToken(email);
+                monitorToken(uid);
 
                 if ('serviceWorker' in navigator) {
                   setupServiceWorker();
@@ -81,7 +81,7 @@ class App extends Component {
           console.log('Adding new user');
           await database
             .collection('users')
-            .doc(authUser.email)
+            .doc(authUser.uid)
             .set({
               name: authUser.displayName,
               email: authUser.email,
@@ -126,7 +126,7 @@ class App extends Component {
         <button onClick={this.logout}>logout</button>
         <span>Name: {this.state.user.email}</span>
         <FirestoreContext.Provider value={database}>
-          <UserContext.Provider value={this.state.user.email}>
+          <UserContext.Provider value={this.state.user.uid}>
             <ListGallery />
           </UserContext.Provider>
         </FirestoreContext.Provider>
@@ -173,20 +173,20 @@ const setupMessaging = registration => {
   registration.pushManager.subscribe({ userVisibleOnly: true });
 };
 
-const storeToken = (token, email) => {
+const storeToken = (token, uid) => {
   const key = `fcm_tokens.${token}`;
   return database
     .collection('users')
-    .doc(email)
+    .doc(uid)
     .update({ [key]: true });
 };
 
-const monitorToken = email => {
+const monitorToken = uid => {
   messaging.onTokenRefresh(() => {
     console.log('Token refreshed!');
     messaging
       .getToken()
-      .then(token => storeToken(token, email))
+      .then(token => storeToken(token, uid))
       .catch(e => console.error(e));
   });
 };
