@@ -57,6 +57,10 @@ class List extends Component {
           />
           <input type="submit" value="submit" />
         </form>
+        <form>
+          <input placeholder="Enter email to share with another user" />
+          <input type="submit" value="submit" />
+        </form>
         {this.props.items.map(item => (
           <Item
             key={item.id}
